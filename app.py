@@ -53,7 +53,7 @@ except FileNotFoundError:
 # === Main Page Based on Navigation Selection ===
 
 if main_selection == "Dataset Overview":
-    st.title("🚢 Titanic Dataset Project")
+    st.title("🚢 Titanic Survival Prediction APP")
     st.header("Dataset Overview")
     st.dataframe(df.head())
 
