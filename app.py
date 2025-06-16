@@ -109,29 +109,32 @@ elif main_selection == "Prediction":
 elif main_selection == "EDA":
     st.title("📊 Exploratory Data Analysis")
 
-    # Apply dark background and white labels
-    plt.style.use("dark_background")
-    sns.set_theme(style="darkgrid", palette="Set2")
+    # Set light theme for matplotlib/seaborn
+    plt.style.use("default")
+    sns.set_theme(style="whitegrid", palette="Set2")
+
+    # Force all labels/ticks to black
     plt.rcParams.update({
-        "text.color": "white",
-        "axes.labelcolor": "white",
-        "axes.titlecolor": "white",
-        "xtick.color": "white",
-        "ytick.color": "white",
-        "axes.edgecolor": "white"
+        "text.color": "black",
+        "axes.labelcolor": "black",
+        "axes.titlecolor": "black",
+        "xtick.color": "black",
+        "ytick.color": "black",
+        "axes.edgecolor": "black"
     })
 
     raw_df = df.copy()
 
-    def set_white_labels(ax):
-        ax.title.set_color("white")
-        ax.xaxis.label.set_color("white")
-        ax.yaxis.label.set_color("white")
-        ax.tick_params(colors="white")
+    # Label coloring function (now black)
+    def set_black_labels(ax):
+        ax.title.set_color("black")
+        ax.xaxis.label.set_color("black")
+        ax.yaxis.label.set_color("black")
+        ax.tick_params(colors="black")
         for label in ax.get_xticklabels():
-            label.set_color("white")
+            label.set_color("black")
         for label in ax.get_yticklabels():
-            label.set_color("white")
+            label.set_color("black")
 
     eda_option = st.selectbox("Select an EDA visualization", [
         "Survival Count", "Age Distribution", "Fare Distribution",
@@ -147,25 +150,25 @@ elif main_selection == "EDA":
         ax.set_xticklabels(['Did Not Survive', 'Survived'], rotation=0)
         ax.set_xlabel("Survival")
         ax.set_ylabel("Count")
-        set_white_labels(ax)
+        set_black_labels(ax)
         st.pyplot(fig)
 
     elif eda_option == "Age Distribution":
         st.subheader("Age Distribution")
         fig, ax = plt.subplots()
-        df['Age'].hist(bins=30, edgecolor='white', color='#2ca02c', ax=ax)
+        df['Age'].hist(bins=30, edgecolor='black', color='#2ca02c', ax=ax)
         ax.set_xlabel("Age")
         ax.set_ylabel("Count")
-        set_white_labels(ax)
+        set_black_labels(ax)
         st.pyplot(fig)
 
     elif eda_option == "Fare Distribution":
         st.subheader("Fare Distribution")
         fig, ax = plt.subplots()
-        df['Fare'].hist(bins=40, edgecolor='white', color='#d62728', ax=ax)
+        df['Fare'].hist(bins=40, edgecolor='black', color='#d62728', ax=ax)
         ax.set_xlabel("Fare")
         ax.set_ylabel("Count")
-        set_white_labels(ax)
+        set_black_labels(ax)
         st.pyplot(fig)
 
     elif eda_option == "Survival by Sex":
@@ -174,7 +177,7 @@ elif main_selection == "EDA":
         pd.crosstab(df['Sex'], df['Survived']).plot(kind='bar', ax=ax, color=['#9467bd', '#8c564b'])
         ax.set_xlabel("Sex")
         ax.set_ylabel("Count")
-        set_white_labels(ax)
+        set_black_labels(ax)
         st.pyplot(fig)
 
     elif eda_option == "Survival by Pclass":
@@ -183,7 +186,7 @@ elif main_selection == "EDA":
         pd.crosstab(df['Pclass'], df['Survived']).plot(kind='bar', ax=ax, color=['#e377c2', '#7f7f7f'])
         ax.set_xlabel("Pclass")
         ax.set_ylabel("Count")
-        set_white_labels(ax)
+        set_black_labels(ax)
         st.pyplot(fig)
 
     elif eda_option == "Boxplot: Age vs Pclass":
@@ -192,7 +195,7 @@ elif main_selection == "EDA":
         sns.boxplot(data=df, x='Pclass', y='Age', ax=ax, palette="Set2")
         ax.set_xlabel("Pclass")
         ax.set_ylabel("Age")
-        set_white_labels(ax)
+        set_black_labels(ax)
         st.pyplot(fig)
 
     elif eda_option == "Correlation Heatmap":
@@ -205,14 +208,14 @@ elif main_selection == "EDA":
         corr = df_corr.corr()
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.heatmap(corr, annot=True, cmap='Spectral', fmt=".2f", ax=ax, cbar_kws={'label': 'Correlation'})
-        set_white_labels(ax)
+        set_black_labels(ax)
         st.pyplot(fig)
 
     elif eda_option == "Missing Value Heatmap":
         st.subheader("Missing Value Heatmap")
         fig, ax = plt.subplots()
         sns.heatmap(df.isnull(), cbar=False, cmap="mako", ax=ax)
-        set_white_labels(ax)
+        set_black_labels(ax)
         st.pyplot(fig)
 
     elif eda_option == "Survival by Embarked":
@@ -221,26 +224,30 @@ elif main_selection == "EDA":
         pd.crosstab(raw_df['Embarked'], raw_df['Survived']).plot(kind='bar', ax=ax, color=['#17becf', '#bcbd22'])
         ax.set_xlabel("Embarked")
         ax.set_ylabel("Count")
-        set_white_labels(ax)
+        set_black_labels(ax)
         st.pyplot(fig)
 
     elif eda_option == "Pairplot (selected features)":
         st.subheader("Pairplot: Selected Features")
-        fig = sns.pairplot(df[['Survived', 'Pclass', 'Age', 'Fare']].dropna(), hue='Survived', palette="Set2", plot_kws={'edgecolor': 'w', 's': 50})
-        fig.fig.patch.set_facecolor('#111111')
+        fig = sns.pairplot(df[['Survived', 'Pclass', 'Age', 'Fare']].dropna(), hue='Survived', palette="Set2", plot_kws={'edgecolor': 'k', 's': 50})
+        fig.fig.patch.set_facecolor('#ffffff')  # Light background
+
         for ax in fig.axes.flat:
-            ax.set_xlabel(ax.get_xlabel(), color='white')
-            ax.set_ylabel(ax.get_ylabel(), color='white')
-            ax.tick_params(colors='white')
+            ax.set_xlabel(ax.get_xlabel(), color='black')
+            ax.set_ylabel(ax.get_ylabel(), color='black')
+            ax.tick_params(colors='black')
             if ax.get_title():
-                ax.set_title(ax.get_title(), color='white')
+                ax.set_title(ax.get_title(), color='black')
+
         if fig._legend:
             for text in fig._legend.get_texts():
-                text.set_color('white')
+                text.set_color('black')
             legend_title = fig._legend.get_title()
             if legend_title:
-                legend_title.set_color('white')
+                legend_title.set_color('black')
+
         st.pyplot(fig)
+
 
 # === Model Evaluation ===
 elif main_selection == "Model Evaluation":
