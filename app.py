@@ -270,7 +270,7 @@ elif main_selection == "Conclusion":
     st.markdown("""
     ### Key Takeaways
     - The Titanic dataset shows strong survival patterns based on gender, class, and age.
-    - Logistic Regression achieved **79.89% accuracy** — a good starting point.
+    - Logistic Regression achieved **72.6% accuracy** — a good starting point.
     - Feature importance shows **Sex**, **Pclass**, and **Fare** are key drivers.
     - Simple preprocessing and scaling were sufficient for baseline performance.
 
