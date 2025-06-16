@@ -105,15 +105,12 @@ elif main_selection == "Prediction":
     if st.button("Predict"):
         st.success(f"Prediction: {result}")
 
-# === Exploratory Data Analysis ===
 elif main_selection == "EDA":
     st.title("📊 Exploratory Data Analysis")
 
-    # Set light theme for matplotlib/seaborn
+    # Use light theme with black labels
     plt.style.use("default")
     sns.set_theme(style="whitegrid", palette="Set2")
-
-    # Force all labels/ticks to black
     plt.rcParams.update({
         "text.color": "black",
         "axes.labelcolor": "black",
@@ -125,7 +122,6 @@ elif main_selection == "EDA":
 
     raw_df = df.copy()
 
-    # Label coloring function (now black)
     def set_black_labels(ax):
         ax.title.set_color("black")
         ax.xaxis.label.set_color("black")
@@ -145,57 +141,63 @@ elif main_selection == "EDA":
 
     if eda_option == "Survival Count":
         st.subheader("Survival Count")
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(8, 5))
         df['Survived'].value_counts().plot(kind='bar', ax=ax, color=['#FF7F0E', '#1F77B4'])
         ax.set_xticklabels(['Did Not Survive', 'Survived'], rotation=0)
         ax.set_xlabel("Survival")
         ax.set_ylabel("Count")
         set_black_labels(ax)
+        fig.tight_layout()
         st.pyplot(fig)
 
     elif eda_option == "Age Distribution":
         st.subheader("Age Distribution")
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(8, 5))
         df['Age'].hist(bins=30, edgecolor='black', color='#2ca02c', ax=ax)
         ax.set_xlabel("Age")
         ax.set_ylabel("Count")
         set_black_labels(ax)
+        fig.tight_layout()
         st.pyplot(fig)
 
     elif eda_option == "Fare Distribution":
         st.subheader("Fare Distribution")
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(8, 5))
         df['Fare'].hist(bins=40, edgecolor='black', color='#d62728', ax=ax)
         ax.set_xlabel("Fare")
         ax.set_ylabel("Count")
         set_black_labels(ax)
+        fig.tight_layout()
         st.pyplot(fig)
 
     elif eda_option == "Survival by Sex":
         st.subheader("Survival by Sex")
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(8, 5))
         pd.crosstab(df['Sex'], df['Survived']).plot(kind='bar', ax=ax, color=['#9467bd', '#8c564b'])
         ax.set_xlabel("Sex")
         ax.set_ylabel("Count")
         set_black_labels(ax)
+        fig.tight_layout()
         st.pyplot(fig)
 
     elif eda_option == "Survival by Pclass":
         st.subheader("Survival by Passenger Class")
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(8, 5))
         pd.crosstab(df['Pclass'], df['Survived']).plot(kind='bar', ax=ax, color=['#e377c2', '#7f7f7f'])
         ax.set_xlabel("Pclass")
         ax.set_ylabel("Count")
         set_black_labels(ax)
+        fig.tight_layout()
         st.pyplot(fig)
 
     elif eda_option == "Boxplot: Age vs Pclass":
         st.subheader("Age Distribution by Pclass")
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(8, 5))
         sns.boxplot(data=df, x='Pclass', y='Age', ax=ax, palette="Set2")
         ax.set_xlabel("Pclass")
         ax.set_ylabel("Age")
         set_black_labels(ax)
+        fig.tight_layout()
         st.pyplot(fig)
 
     elif eda_option == "Correlation Heatmap":
@@ -206,31 +208,38 @@ elif main_selection == "EDA":
         drop_cols = [col for col in ['PassengerId', 'Name', 'Ticket', 'Cabin'] if col in df_corr.columns]
         df_corr.drop(drop_cols, axis=1, inplace=True)
         corr = df_corr.corr()
-        fig, ax = plt.subplots(figsize=(10, 6))
+        fig, ax = plt.subplots(figsize=(8, 6))
         sns.heatmap(corr, annot=True, cmap='Spectral', fmt=".2f", ax=ax, cbar_kws={'label': 'Correlation'})
         set_black_labels(ax)
+        fig.tight_layout()
         st.pyplot(fig)
 
     elif eda_option == "Missing Value Heatmap":
         st.subheader("Missing Value Heatmap")
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(8, 5))
         sns.heatmap(df.isnull(), cbar=False, cmap="mako", ax=ax)
         set_black_labels(ax)
+        fig.tight_layout()
         st.pyplot(fig)
 
     elif eda_option == "Survival by Embarked":
         st.subheader("Survival by Port of Embarkation")
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(8, 5))
         pd.crosstab(raw_df['Embarked'], raw_df['Survived']).plot(kind='bar', ax=ax, color=['#17becf', '#bcbd22'])
         ax.set_xlabel("Embarked")
         ax.set_ylabel("Count")
         set_black_labels(ax)
+        fig.tight_layout()
         st.pyplot(fig)
 
     elif eda_option == "Pairplot (selected features)":
         st.subheader("Pairplot: Selected Features")
-        fig = sns.pairplot(df[['Survived', 'Pclass', 'Age', 'Fare']].dropna(), hue='Survived', palette="Set2", plot_kws={'edgecolor': 'k', 's': 50})
-        fig.fig.patch.set_facecolor('#ffffff')  # Light background
+        fig = sns.pairplot(df[['Survived', 'Pclass', 'Age', 'Fare']].dropna(),
+                           hue='Survived',
+                           palette="Set2",
+                           plot_kws={'edgecolor': 'k', 's': 50})
+        fig.fig.set_size_inches(8, 6)
+        fig.fig.patch.set_facecolor('#ffffff')
 
         for ax in fig.axes.flat:
             ax.set_xlabel(ax.get_xlabel(), color='black')
@@ -270,7 +279,7 @@ elif main_selection == "Conclusion":
     st.markdown("""
     ### Key Takeaways
     - The Titanic dataset shows strong survival patterns based on gender, class, and age.
-    - Logistic Regression achieved **72.6% accuracy** — a good starting point.
+    - Logistic Regression achieved **79.89% accuracy** — a good starting point.
     - Feature importance shows **Sex**, **Pclass**, and **Fare** are key drivers.
     - Simple preprocessing and scaling were sufficient for baseline performance.
 
